@@ -43,6 +43,8 @@ public class SixCimTwoSpeed extends Subsystem {
 	private Timer timer = new Timer();
 	private double lastTrackedTime;
 	private double period;
+	private double lastAutoShift;
+	private double timeSinceLastAutoShift;
 
 	public SixCimTwoSpeed() {
 
@@ -76,7 +78,8 @@ public class SixCimTwoSpeed extends Subsystem {
 		// initialize time tracking
 		timer.start();
 		lastTrackedTime = 0;
-
+		lastAutoShift =0;
+		timeSinceLastAutoShift =0;
 	}
 
 	protected void initDefaultCommand() {
@@ -158,29 +161,39 @@ public class SixCimTwoSpeed extends Subsystem {
 	private void shiftAutomatically() {
 		// shifts if neccessary, returns whether shifting was done
 		if (getDriveSpeedFPS() > Constants.drivetrainUpshiftSpeedThreshold
-				&& Math.abs(power) > Constants.drivetrainUpshiftPowerThreshold && isSpeedingUp() && isInLowGear()) {
+				&& Math.abs(power) > Constants.drivetrainUpshiftPowerThreshold && isSpeedingUp() && isInLowGear() && canAutoShiftAgain()) {
 			// Normal Upshift
 			// if fast enough to need to upshift, driver is applying sufficient
 			// throttle, the robot is speeding up and it's in low gear, upshift
 			new AutoShiftToHigh().start();
-		} else if (getDriveSpeedFPS() > Constants.drivetrainMaxLowGearSpeed && isInLowGear()) {
+			lastAutoShift = timer.get();
+			timeSinceLastAutoShift = 0;
+		} else if (getDriveSpeedFPS() > Constants.drivetrainMaxLowGearSpeed && isInLowGear() && canAutoShiftAgain()) {
 			// the rev limiter was hit because driver wasn't hitting the
 			// throttle hard enough to change gear
 			new AutoShiftToHigh().start();
-		} else if (getDriveSpeedFPS() < Constants.drivetrainPowerDownshiftSpeedThreshold
-				&& Math.abs(power) > Constants.drivetrainPowerDownshiftPowerThreshold && isSlowingDown()
-				&& isInHighGear()) {
-			// if the robot is slowing down while the driver is applying
-			// sufficient power, and is at a reasonable speed to be in low gear,
-			// downshift.
-			// Think of a pushing match that started at high speed
+			lastAutoShift = timer.get();
+			timeSinceLastAutoShift = 0;
+//<<<<<<< HEAD
+		}
+		else if(getDriveSpeedFPS() < Constants.drivetrainMaxLowGearSpeed && Math.abs(power) > Constants.drivetrainPowerDownshiftPowerThreshold && isSlowingDown() && isInHighGear() && canAutoShiftAgain()){
+			//if the robot is slowing down while the driver is applying sufficient power, and is at a reasonable speed to be in low gear, downshift.
+			//Think of a pushing match that started at high speed
 			new AutoShiftToLow().start();
-		} else if (getDriveSpeedFPS() < Constants.drivetrainDownshiftSpeedThreshold
-				&& Math.abs(power) < Constants.drivetrainDownshiftPowerThreshold && isInHighGear()) {
-			// if the robot is slowing down, not being given considerable
-			// throttle
-			// a coasting/stopping downshift
+			lastAutoShift = timer.get();
+			timeSinceLastAutoShift = 0;
+		}
+		else if(getDriveSpeedFPS() < Constants.drivetrainDownshiftSpeedThreshold && Math.abs(power) > Constants.drivetrainPowerDownshiftPowerThreshold && isInHighGear() && canAutoShiftAgain()){
 			new AutoShiftToLow().start();
+			lastAutoShift = timer.get();
+			timeSinceLastAutoShift = 0;
+		}
+		else if(getDriveSpeedFPS() < Constants.drivetrainDownshiftSpeedThreshold && Math.abs(power) < Constants.drivetrainDownshiftPowerThreshold && isInHighGear() && canAutoShiftAgain()){
+			//if the robot is slowing down, not being given considerable throttle
+			//a coasting/stopping downshift
+			new AutoShiftToLow().start();
+			lastAutoShift = timer.get();
+			timeSinceLastAutoShift = 0;
 		}
 	}
 
@@ -223,9 +236,10 @@ public class SixCimTwoSpeed extends Subsystem {
 	public boolean isSpeedingUp() {
 		return getDriveAccelFPSPS() > Constants.drivetrainAccelerationThreshold;
 	}
-
-	public boolean isSlowingDown() {
-		return getDriveAccelFPSPS() < Constants.drivetrainAccelerationThreshold;
+///<<<<<<< HEAD
+	public boolean isSlowingDown(){
+		return getDriveAccelFPSPS() < -Constants.drivetrainAccelerationThreshold;
+///=======
 	}
 
 	// Methods for getting and setting user input
@@ -284,7 +298,12 @@ public class SixCimTwoSpeed extends Subsystem {
 	public boolean isAutoShiftActive() {
 		return autoShift;
 	}
-
+	public boolean canAutoShiftAgain(){
+		//sets a minimum time to allow the drivetrain to begin accel or continue to decel after a gear change
+		//such that the shifting logic doesn't end up shifting back and forth forever.
+		return timeSinceLastAutoShift > Constants.drivetrainMinTimeBetweenShifts;
+	}
+	
 	public void execute(double pPower, double pTurn) {
 
 		// Sets desired power and turn.
@@ -299,6 +318,7 @@ public class SixCimTwoSpeed extends Subsystem {
 			System.out.println("SixCimTwoSpeed execute() hasn't run in:" + (timer.get() - lastTrackedTime));
 		}
 		lastTrackedTime = timer.get();
+		timeSinceLastAutoShift = timer.get() - lastAutoShift;
 
 		lastSpeed = currentSpeed;
 		currentSpeed = getDriveSpeedFPS();
