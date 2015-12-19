@@ -16,6 +16,8 @@ public class SmartDashboardInterface {
 		SmartDashboard.putBoolean("High Gear?", Robot.drivetrainSS.isInHighGear());
 		SmartDashboard.putNumber("Total Amperage", Robot.drivetrainSS.getAmperage());
 		SmartDashboard.putNumber("Number of CIMs Running Per Side", Robot.drivetrainSS.getCimsRunningPerSide());
+		SmartDashboard.putBoolean("AutoShift:", Robot.drivetrainSS.isAutoShiftActive());
+		SmartDashboard.putNumber("Acceleration (ft/s/s)", Robot.drivetrainSS.getDriveAccelFPSPS());
 	
 	}
 	

@@ -4,6 +4,9 @@ package org.usfirst.frc.team1806.robot;
 import org.usfirst.frc.team1806.robot.commands.AutoShiftToHigh;
 import org.usfirst.frc.team1806.robot.commands.AutoShiftToLow;
 import org.usfirst.frc.team1806.robot.commands.ParkingBrake;
+
+import util.Latch;
+
 import java.lang.Math;
 
 /**
@@ -21,7 +24,10 @@ public class OI {
 	private double rt;
 	private double lt;
 	public boolean buttonA;
+	public boolean buttonBack;
+	private Latch disableAutoShift;
 	public OI() {
+		disableAutoShift = new Latch();
 		// NOTHING
 	}
 
@@ -33,6 +39,7 @@ public class OI {
 		rt = dc.getRightTrigger();
 		lt = dc.getLeftTrigger();
 		buttonA = dc.getButtonA();
+		buttonBack = dc.getButtonBack();
 		// arcade drive, with deazone
 
 		if (Robot.drivetrainSS.driverControl){
@@ -56,11 +63,18 @@ public class OI {
 				Robot.drivetrainSS.arcadeDrive(0, 0);
 			}
 		}
-		if(lt > .15){
+		//enable or disable automatic shifting based on back button
+		if (Robot.drivetrainSS.isAutoShiftActive() && disableAutoShift.update(buttonBack)){
+			Robot.drivetrainSS.disableAutoShift();
+		}
+		if((!Robot.drivetrainSS.isAutoShiftActive())&& disableAutoShift.update(buttonBack)){
+			Robot.drivetrainSS.enableAutoShift();
+		}
+		if(lt > .15 && !Robot.drivetrainSS.isAutoShiftActive()){
 			//shift to low manually
 			new AutoShiftToLow().start();
 		}
-		else if(rt > .15){
+		else if(rt > .15 && !Robot.drivetrainSS.isAutoShiftActive()){
 			new AutoShiftToHigh().start();
 		}
 	}

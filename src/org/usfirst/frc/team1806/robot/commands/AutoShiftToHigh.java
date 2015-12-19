@@ -21,7 +21,7 @@ public class AutoShiftToHigh extends Command {
     protected void initialize() {
         Robot.drivetrainSS.shiftHigh();
         //TODO: see if setting power to zero actually lets the robot shift
-        Robot.drivetrainSS.arcadeDrive(0, 0);
+        Robot.drivetrainSS.arcadeDrive(Constants.drivetrainShiftPower, 0);
         Robot.drivetrainSS.driverControl = false;
         timer.start();
     }
