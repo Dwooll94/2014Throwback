@@ -167,7 +167,7 @@ public class SixCimTwoSpeed extends Subsystem {
 			// the rev limiter was hit because driver wasn't hitting the
 			// throttle hard enough to change gear
 			new AutoShiftToHigh().start();
-<<<<<<< HEAD
+//<<<<<<< HEAD
 		}
 		else if(getDriveSpeedFPS() < Constants.drivetrainMaxLowGearSpeed && Math.abs(power) > Constants.drivetrainPowerDownshiftPowerThreshold && isSlowingDown() && isInHighGear()){
 			//if the robot is slowing down while the driver is applying sufficient power, and is at a reasonable speed to be in low gear, downshift.
@@ -180,21 +180,6 @@ public class SixCimTwoSpeed extends Subsystem {
 		else if(getDriveSpeedFPS() < Constants.drivetrainDownshiftSpeedThreshold && Math.abs(power) < Constants.drivetrainDownshiftPowerThreshold && isInHighGear()){
 			//if the robot is slowing down, not being given considerable throttle
 			//a coasting/stopping downshift
-=======
-		} else if (getDriveSpeedFPS() < Constants.drivetrainPowerDownshiftSpeedThreshold
-				&& Math.abs(power) > Constants.drivetrainPowerDownshiftPowerThreshold && isSlowingDown()
-				&& isInHighGear()) {
-			// if the robot is slowing down while the driver is applying
-			// sufficient power, and is at a reasonable speed to be in low gear,
-			// downshift.
-			// Think of a pushing match that started at high speed
-			new AutoShiftToLow().start();
-		} else if (getDriveSpeedFPS() < Constants.drivetrainDownshiftSpeedThreshold
-				&& Math.abs(power) < Constants.drivetrainDownshiftPowerThreshold && isInHighGear()) {
-			// if the robot is slowing down, not being given considerable
-			// throttle
-			// a coasting/stopping downshift
->>>>>>> refs/remotes/lethcoeb/Integrate-Drivetrain-Execute-Method
 			new AutoShiftToLow().start();
 		}
 	}
@@ -238,14 +223,10 @@ public class SixCimTwoSpeed extends Subsystem {
 	public boolean isSpeedingUp() {
 		return getDriveAccelFPSPS() > Constants.drivetrainAccelerationThreshold;
 	}
-<<<<<<< HEAD
+///<<<<<<< HEAD
 	public boolean isSlowingDown(){
 		return getDriveAccelFPSPS() < -Constants.drivetrainAccelerationThreshold;
-=======
-
-	public boolean isSlowingDown() {
-		return getDriveAccelFPSPS() < Constants.drivetrainAccelerationThreshold;
->>>>>>> refs/remotes/lethcoeb/Integrate-Drivetrain-Execute-Method
+///=======
 	}
 
 	// Methods for getting and setting user input
