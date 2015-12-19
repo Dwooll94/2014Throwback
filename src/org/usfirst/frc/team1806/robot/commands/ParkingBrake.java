@@ -27,21 +27,25 @@ public class ParkingBrake extends Command {
     	EncoderSource = new PIDSource() {
 			
 			@Override
-			public double pidGet() {	
-				return encoderStartPoint;
+			public double pidGet() {
+				//Returns the difference between where you started braking at and where you are.
+				return Math.abs(encoderStartPoint - Robot.drivetrainSS.getDriveDistance());
 			}
 		};
     	PidOut = new PIDOutput() {
 			
 			@Override
 			public void pidWrite(double output) {
+				
+				//TODO: Make it correct for if only one side is pushed
+				// Need to read each encoder separately and have two PID loops
 				Robot.drivetrainSS.arcadeDrive(output, 0);
 				
 			}
 		};
-    	brakePID = new PIDController(Constants.drivepidP, Constants.drivepidI, Constants.drivepidD,EncoderSource, PidOut);
-    	brakePID.setSetpoint(Robot.drivetrainSS.getDriveDistance());
+    	brakePID = new PIDController(Constants.brakepidP, Constants.brakepidI, Constants.brakepidD, EncoderSource, PidOut);
     	brakePID.reset();
+    	brakePID.setSetpoint(Robot.drivetrainSS.getDriveDistance());
     	brakePID.enable();
     }
 
@@ -57,6 +61,7 @@ public class ParkingBrake extends Command {
     // Called once after isFinished returns true
     protected void end() {
     	brakePID.disable();
+    	Robot.drivetrainSS.arcadeDrive(0, 0);
     	Robot.drivetrainSS.driverControl = true;
     }
 
