@@ -160,9 +160,12 @@ public class SixCimTwoSpeed extends Subsystem {
 			//the rev limiter was hit because driver wasn't hitting the throttle hard enough to change gear
 			new AutoShiftToHigh().start();
 		}
-		else if(getDriveSpeedFPS() < Constants.drivetrainPowerDownshiftSpeedThreshold && Math.abs(power) > Constants.drivetrainPowerDownshiftPowerThreshold && isSlowingDown() && isInHighGear()){
+		else if(getDriveSpeedFPS() < Constants.drivetrainMaxLowGearSpeed && Math.abs(power) > Constants.drivetrainPowerDownshiftPowerThreshold && isSlowingDown() && isInHighGear()){
 			//if the robot is slowing down while the driver is applying sufficient power, and is at a reasonable speed to be in low gear, downshift.
 			//Think of a pushing match that started at high speed
+			new AutoShiftToLow().start();
+		}
+		else if(getDriveSpeedFPS() < Constants.drivetrainDownshiftSpeedThreshold && Math.abs(power) > Constants.drivetrainPowerDownshiftPowerThreshold && isInHighGear()){
 			new AutoShiftToLow().start();
 		}
 		else if(getDriveSpeedFPS() < Constants.drivetrainDownshiftSpeedThreshold && Math.abs(power) < Constants.drivetrainDownshiftPowerThreshold && isInHighGear()){
@@ -204,7 +207,7 @@ public class SixCimTwoSpeed extends Subsystem {
 		return getDriveAccelFPSPS() > Constants.drivetrainAccelerationThreshold;
 	}
 	public boolean isSlowingDown(){
-		return getDriveAccelFPSPS() < Constants.drivetrainAccelerationThreshold;
+		return getDriveAccelFPSPS() < -Constants.drivetrainAccelerationThreshold;
 	}
 
 	//Methods for getting and setting user input
