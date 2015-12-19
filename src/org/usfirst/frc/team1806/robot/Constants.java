@@ -23,12 +23,12 @@ public class Constants {
 	public final static double drivetrainPowerDownshiftPowerThreshold = .97 ; //power must be over this
 	//a normal downshift is when the robot is more than likely coming to rest
 	public final static double drivetrainDownshiftPowerThreshold = .2; // power must be less than this
-	public final static double drivetrainDownshiftSpeedThreshold = 4; //speed must be less than this
+	public final static double drivetrainDownshiftSpeedThreshold = 3; //speed must be less than this
 	
 	//normal upshift that would occur when going from a stop to full speed
 	public final static double drivetrainUpshiftPowerThreshold = .75; //power must be more than this
-	public final static double drivetrainUpshiftSpeedThreshold = 6.0; //speed must be more than this
-	public final static double drivetrainMaxLowGearSpeed = 6.75; //exceeding this speed will force an autoshift to high gear.
+	public final static double drivetrainUpshiftSpeedThreshold = 4.5; //speed must be more than this
+	public final static double drivetrainMaxLowGearSpeed = 6; //exceeding this speed will force an autoshift to high gear.
 	//also used for a power downshift
 	public final static double drivetrainMinTimeBetweenShifts = 0.5;
 	//drive forward PID values

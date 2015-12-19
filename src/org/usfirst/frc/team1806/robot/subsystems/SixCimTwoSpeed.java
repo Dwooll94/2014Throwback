@@ -37,10 +37,12 @@ public class SixCimTwoSpeed extends Subsystem {
 	private int cimsRunningPerSide;
 	private boolean autoShift;
 	public boolean driverControl = true;
-	private double currentSpeed;
-	private double lastSpeed;
+	
+	//TODO Make these private
+	public static double currentSpeed;
+	public static double lastSpeed;
 	// CIM stress tracking variables
-	private Timer timer = new Timer();
+	private Timer timer;
 	private double lastTrackedTime;
 	private double period;
 	private double lastAutoShift;
@@ -60,7 +62,7 @@ public class SixCimTwoSpeed extends Subsystem {
 		rightDrive1 = new Talon(RobotMap.rightCim1);
 		rightDrive2 = new Talon(RobotMap.rightCim2);
 		// initialize right side Encoder
-		rightEncoder = new Encoder(RobotMap.rightEncoderA, RobotMap.rightEncoderB);
+		rightEncoder = new Encoder(RobotMap.rightEncoderA, RobotMap.rightEncoderB, true);
 
 		// initialize shifter
 		shifter = new DoubleSolenoid(RobotMap.shiftSolenoidA, RobotMap.shiftSolenoidB);
@@ -76,6 +78,7 @@ public class SixCimTwoSpeed extends Subsystem {
 		lastSpeed = 0;
 
 		// initialize time tracking
+		timer = new Timer();
 		timer.start();
 		lastTrackedTime = 0;
 		lastAutoShift =0;
@@ -94,6 +97,9 @@ public class SixCimTwoSpeed extends Subsystem {
 		}else if (speed < -1) {
 			speed = -1;
 		}
+		
+		speed = -speed;
+		
 		// set power
 		if (numCimsRunning < 1) {
 			leftDrive0.set(0);
@@ -130,6 +136,9 @@ public class SixCimTwoSpeed extends Subsystem {
 		if (speed < -1) {
 			speed = -1;
 		}
+		
+		
+		
 		if (numCimsRunning < 1) {
 			rightDrive0.set(0);
 			rightDrive1.set(0);
@@ -200,25 +209,25 @@ public class SixCimTwoSpeed extends Subsystem {
 	// Methods for getting encoder values
 	public double getDriveDistance() {
 		// returns an the average distance of the left and right encoders
-		return ((leftEncoder.getDistance() + rightEncoder.getDistance()) / 2) / Constants.drivetrainInchesPerCount;
+		return ((leftEncoder.getDistance() + rightEncoder.getDistance()) / 2) * Constants.drivetrainInchesPerCount;
 	}
 
 	public double getLeftDistance() {
-		return leftEncoder.getDistance() / Constants.drivetrainInchesPerCount;
+		return leftEncoder.getDistance() * Constants.drivetrainInchesPerCount;
 	}
 
 	public double getRightDistance() {
-		return rightEncoder.getDistance() / Constants.drivetrainInchesPerCount;
+		return rightEncoder.getDistance() * Constants.drivetrainInchesPerCount;
 	}
 
 	public double getDriveVelocity() {
 		// returns the average speed of the left and right side in inches per
 		// second
-		return ((leftEncoder.getRate() + rightEncoder.getRate()) / 2) / Constants.drivetrainInchesPerCount;
+		return ((leftEncoder.getRate() + rightEncoder.getRate()) / 2) * Constants.drivetrainInchesPerCount;
 	}
 
 	public double getDriveVelocityFPS() {
-		return getDriveSpeed() / 12;
+		return getDriveVelocity() / 12;
 	}
 
 	public double getDriveSpeed() {

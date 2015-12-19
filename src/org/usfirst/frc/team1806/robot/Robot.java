@@ -16,17 +16,18 @@ import org.usfirst.frc.team1806.robot.subsystems.SixCimTwoSpeed;
  */
 public class Robot extends IterativeRobot {
 
-	public static final SixCimTwoSpeed drivetrainSS = new SixCimTwoSpeed();
+	public static SixCimTwoSpeed drivetrainSS;
 	public static OI oi;
-
-    Command autonomousCommand;
+	public static SmartDashboardInterface dashboard;
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
+    	drivetrainSS = new SixCimTwoSpeed();
 		oi = new OI();
+		dashboard = new SmartDashboardInterface();
     }
 	
 	public void disabledPeriodic() {
@@ -34,7 +35,7 @@ public class Robot extends IterativeRobot {
 	}
 
     public void autonomousInit() {
-        if (autonomousCommand != null) autonomousCommand.start();
+        //if (autonomousCommand != null) autonomousCommand.start();
     }
 
     public void autonomousPeriodic() {
@@ -42,7 +43,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopInit() {
-        if (autonomousCommand != null) autonomousCommand.cancel();
+        //if (autonomousCommand != null) autonomousCommand.cancel();
     }
 
     public void disabledInit(){
@@ -52,6 +53,7 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         oi.update();
+        dashboard.updateData();
     }
     
     public void testPeriodic() {

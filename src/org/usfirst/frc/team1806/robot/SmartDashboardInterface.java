@@ -12,12 +12,17 @@ public class SmartDashboardInterface {
 		SmartDashboard.putNumber("Power", Robot.drivetrainSS.getPower());
 		SmartDashboard.putNumber("Turn", Robot.drivetrainSS.getTurn());
 		SmartDashboard.putNumber("Drive Distance", Robot.drivetrainSS.getDriveDistance());
-		SmartDashboard.putNumber("Drive Speed (ft/s)", Robot.drivetrainSS.getDriveSpeedFPS());
 		SmartDashboard.putBoolean("High Gear?", Robot.drivetrainSS.isInHighGear());
 		SmartDashboard.putNumber("Total Amperage", Robot.drivetrainSS.getAmperage());
 		SmartDashboard.putNumber("Number of CIMs Running Per Side", Robot.drivetrainSS.getCimsRunningPerSide());
 		SmartDashboard.putBoolean("AutoShift:", Robot.drivetrainSS.isAutoShiftActive());
-		SmartDashboard.putNumber("Acceleration (ft/s/s)", Robot.drivetrainSS.getDriveAccelFPSPS());
+		SmartDashboard.putNumber("Right Encoder", Robot.drivetrainSS.getRightDistance());
+		SmartDashboard.putNumber("Left Encoder", Robot.drivetrainSS.getLeftDistance());
+		SmartDashboard.putNumber("Last speed", Robot.drivetrainSS.lastSpeed);
+		SmartDashboard.putNumber("Current speed", Robot.drivetrainSS.currentSpeed);
+		
+		SmartDashboard.putNumber("Drive Speed fps", Robot.drivetrainSS.getDriveSpeedFPS());
+		SmartDashboard.putNumber("Acceleration fpsps", Robot.drivetrainSS.getDriveAccelFPSPS());
 	
 	}
 	
