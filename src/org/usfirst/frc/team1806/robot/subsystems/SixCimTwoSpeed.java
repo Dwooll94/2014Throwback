@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class SixCimTwoSpeed extends Subsystem {
@@ -18,6 +19,7 @@ public class SixCimTwoSpeed extends Subsystem {
 	private Talon leftDrive0;
 	private Talon leftDrive1;
 	private Talon leftDrive2;
+	
 	
 	private Encoder leftEncoder;
 	
@@ -34,11 +36,16 @@ public class SixCimTwoSpeed extends Subsystem {
 	private double power;
 	private double turn;
 	private int cimsRunningPerSide;
-	
+	private boolean autoShift;
 	public boolean driverControl = true;
+	
+	//CIM stress tracking variables
+	private Timer timer = new Timer();
+	private double lastTrackedTime;
+	
+	
 
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
 		
 		//initialize left side CIMs
 		leftDrive0 = new Talon(RobotMap.leftCim0);
@@ -64,6 +71,11 @@ public class SixCimTwoSpeed extends Subsystem {
 		power = 0;
 		turn = 0;
 		cimsRunningPerSide = 3;
+		autoShift = true;
+		
+		//initialize CIM stress tracking
+		timer.start();
+		lastTrackedTime = 0;
 	}
 	//Private Methods for setting the left and right drive all at once
 	private void setLeftDrive(double speed, int numCimsRunning){
@@ -175,7 +187,7 @@ public class SixCimTwoSpeed extends Subsystem {
 	public int getCimsRunningPerSide(){
 		return cimsRunningPerSide;
 	}
-	
+	//methods regarding shifting
 	public void shiftLow(){
 		power = 0;
 		turn = 0;
@@ -196,7 +208,31 @@ public class SixCimTwoSpeed extends Subsystem {
 		return shifter.get() == DoubleSolenoid.Value.kForward;
 	}
 	
+	public void disableAutoShift(){
+		autoShift = false; 
+	}
+	public void enableAutoShift() {
+		autoShift = true;
+	}
+	public boolean isAutoShiftActive(){
+		return autoShift;
+	}
+	
 	public void execute(){
+		//track CIM stress
+		/*
+		 This is an approximation by taking the integral of the instantaneous amps to a motor (amps * time)
+		 we get an approximation of the stress on the motor. Hopefully that would mean that 
+		 TODO: Find a use for motor stress information.
+		 */
+		
+		//Warn console if loop hasn't been run recently.
+		if((timer.get() - lastTrackedTime) > Constants.drivetrainExecuteWarnTime){
+			System.out.println("SixCimTwoSpeed execute() hasn't run in:" + (timer.get() - lastTrackedTime));
+		}
+		lastTrackedTime = timer.get();
+		
+		
 		if (PDP.getTotalCurrent() > Constants.max1CimAmps){
 			//Stop drivetrain to avoid brown out
 			cimsRunningPerSide = 0;
@@ -215,10 +251,10 @@ public class SixCimTwoSpeed extends Subsystem {
 			cimsRunningPerSide = 3;
 		}//end 3 cims, also end deciding how many CIMs to run
 		//shift and set power as needed
-		if(Math.abs(getDriveSpeedFPS()) > 6.0 && isInLowGear()){
+		if(autoShift  && Math.abs(getDriveSpeedFPS()) > 6.0 && isInLowGear()){
 			new AutoShiftToHigh().start();
 		}
-		else if(Math.abs(getDriveSpeedFPS()) < 4.0 && isInHighGear()){
+		else if(autoShift && Math.abs(getDriveSpeedFPS()) < 4.0 && isInHighGear()){
 			new AutoShiftToLow().start();
 		}
 		else{
