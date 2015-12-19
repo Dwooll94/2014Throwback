@@ -20,7 +20,7 @@ public class Constants {
 	public final static double drivetrainShiftPower = 0; //power with which the motors are given while shifting
 	public final static double drivetrainAccelerationThreshold = .02; // applied for determining actual accel for shifting
 	//a "Power" downshift is one in which the speed is low but applied power is high
-	public final static double drivetrainPowerDownshiftPowerThreshold = .8 ; //power must be over this
+	public final static double drivetrainPowerDownshiftPowerThreshold = .97 ; //power must be over this
 	//a normal downshift is when the robot is more than likely coming to rest
 	public final static double drivetrainDownshiftPowerThreshold = .2; // power must be less than this
 	public final static double drivetrainDownshiftSpeedThreshold = 4; //speed must be less than this
@@ -30,7 +30,7 @@ public class Constants {
 	public final static double drivetrainUpshiftSpeedThreshold = 6.0; //speed must be more than this
 	public final static double drivetrainMaxLowGearSpeed = 6.75; //exceeding this speed will force an autoshift to high gear.
 	//also used for a power downshift
-	
+	public final static double drivetrainMinTimeBetweenShifts = 0.5;
 	//drive forward PID values
 	public final static double brakepidP = 0.1;
 	public final static double brakepidI = 0.1;
