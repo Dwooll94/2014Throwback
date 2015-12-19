@@ -20,7 +20,7 @@ public class SmartDashboardInterface {
 		SmartDashboard.putNumber("Left Encoder", Robot.drivetrainSS.getLeftDistance());
 		SmartDashboard.putNumber("Last speed", Robot.drivetrainSS.lastSpeed);
 		SmartDashboard.putNumber("Current speed", Robot.drivetrainSS.currentSpeed);
-		
+		SmartDashboard.putBoolean("CanAutoShiftAgain", Robot.drivetrainSS.canAutoShiftAgain());
 		SmartDashboard.putNumber("Drive Speed fps", Robot.drivetrainSS.getDriveSpeedFPS());
 		SmartDashboard.putNumber("Acceleration fpsps", Robot.drivetrainSS.getDriveAccelFPSPS());
 	

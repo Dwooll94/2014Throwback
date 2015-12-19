@@ -43,8 +43,8 @@ public class OI {
 		// arcade drive, with deadzone
 
 		if (Robot.drivetrainSS.driverControl){
-			if (Math.abs(lsY) > .15) {
-				if (Math.abs(rsX) > .15) {
+			if (Math.abs(lsY) > Constants.xboxJoystickDeadzone) {
+				if (Math.abs(rsX) > Constants.xboxJoystickDeadzone) {
 					Robot.drivetrainSS.execute(lsY, rsX);
 					
 					//Using the execute method in the drivetrain subsystem instead of calling arcade drive.
@@ -58,7 +58,7 @@ public class OI {
 					//Robot.drivetrainSS.arcadeDrive(lsY, 0);
 				} // end only turn is out of deadzone
 			} // end turn is out of deadzone
-			else if (Math.abs(rsX) > .15) {
+			else if (Math.abs(rsX) > Constants.xboxJoystickDeadzone) {
 				// only turn is out of deadzone
 				Robot.drivetrainSS.execute(0, rsX);
 

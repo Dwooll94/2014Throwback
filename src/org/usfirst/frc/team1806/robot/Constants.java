@@ -6,6 +6,7 @@ public class Constants {
 	public final static int max2CimAmps = 250;
 	public final static int max1CimAmps = 300;
 	
+	public final static double xboxJoystickDeadzone = .2;
 	//drivetrain encoder constants
 	//lmao bruh did you memorize this number
 	//it's almost as long as pi

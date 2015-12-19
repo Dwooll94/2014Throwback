@@ -66,6 +66,7 @@ public class SixCimTwoSpeed extends Subsystem {
 
 		// initialize shifter
 		shifter = new DoubleSolenoid(RobotMap.shiftSolenoidA, RobotMap.shiftSolenoidB);
+		shiftLow();
 		// initialize PDP
 		PDP = new PowerDistributionPanel();
 
