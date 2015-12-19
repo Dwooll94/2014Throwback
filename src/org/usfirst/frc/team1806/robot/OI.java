@@ -15,7 +15,7 @@ import java.lang.Math;
  */
 public class OI {
 
-	private XboxController dc = new XboxController(0);
+	public XboxController dc = new XboxController(0);
 
 	private double lsY;
 	// private double lsY;
@@ -40,27 +40,37 @@ public class OI {
 		lt = dc.getLeftTrigger();
 		buttonA = dc.getButtonA();
 		buttonBack = dc.getButtonBack();
-		// arcade drive, with deazone
+		// arcade drive, with deadzone
 
 		if (Robot.drivetrainSS.driverControl){
 			if (Math.abs(lsY) > .15) {
 				if (Math.abs(rsX) > .15) {
-					Robot.drivetrainSS.arcadeDrive(lsY, rsX);
+					Robot.drivetrainSS.execute(lsY, rsX);
+					
+					//Using the execute method in the drivetrain subsystem instead of calling arcade drive.
+					
+					//Robot.drivetrainSS.arcadeDrive(lsY, rsX);
 				} // end both out of deadzone
 				else {
 					// only power is out of deadzone
-					Robot.drivetrainSS.arcadeDrive(lsY, 0);
+					Robot.drivetrainSS.execute(lsY, 0);
+
+					//Robot.drivetrainSS.arcadeDrive(lsY, 0);
 				} // end only turn is out of deadzone
 			} // end turn is out of deadzone
 			else if (Math.abs(rsX) > .15) {
 				// only turn is out of deadzone
-				Robot.drivetrainSS.arcadeDrive(0, rsX);
+				Robot.drivetrainSS.execute(0, rsX);
+
+				//Robot.drivetrainSS.arcadeDrive(0, rsX);
 			} // end only turn is out of deadzone
 			else if (buttonA){
 				new ParkingBrake().start();
 			}
 			else {
-				Robot.drivetrainSS.arcadeDrive(0, 0);
+				Robot.drivetrainSS.execute(0, 0);
+
+				//Robot.drivetrainSS.arcadeDrive(0, 0);
 			}
 		}
 		//enable or disable automatic shifting based on back button
@@ -70,6 +80,7 @@ public class OI {
 		if((!Robot.drivetrainSS.isAutoShiftActive())&& disableAutoShift.update(buttonBack)){
 			Robot.drivetrainSS.enableAutoShift();
 		}
+		
 		if(lt > .15 && !Robot.drivetrainSS.isAutoShiftActive()){
 			//shift to low manually
 			new AutoShiftToLow().start();

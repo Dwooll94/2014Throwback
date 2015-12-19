@@ -92,7 +92,6 @@ public class XboxController extends Joystick {
         return getRawButton(10);
     }
     
-    //TODO: check if these actually work
     public boolean getPOVUp(){
     	return getPOV() > 45 && getPOV() < 135;
     }
@@ -109,5 +108,4 @@ public class XboxController extends Joystick {
     	return getPOV() > 315 && getPOV() < 45;
     }
     
-    //TODO: Add start, select, dpad...
 }
