@@ -53,7 +53,7 @@ public class SixCimTwoSpeed extends Subsystem {
 		leftDrive1 = new Talon(RobotMap.leftCim1);
 		leftDrive2 = new Talon(RobotMap.leftCim2);
 		// initialize left side Encoder
-		leftEncoder = new Encoder(RobotMap.leftEncoderA, RobotMap.leftEncoderB);
+		leftEncoder = new Encoder(RobotMap.leftEncoderA, RobotMap.leftEncoderB, true);
 
 		// initialize right side CIMs
 		rightDrive0 = new Talon(RobotMap.rightCim0);
@@ -94,6 +94,7 @@ public class SixCimTwoSpeed extends Subsystem {
 		}else if (speed < -1) {
 			speed = -1;
 		}
+		speed = -speed; //invert speed to left side
 		// set power
 		if (numCimsRunning < 1) {
 			leftDrive0.set(0);
