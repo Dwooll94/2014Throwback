@@ -1,0 +1,69 @@
+package org.usfirst.frc.team1806.robot.commands;
+
+import org.usfirst.frc.team1806.robot.Constants;
+import org.usfirst.frc.team1806.robot.Robot;
+
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.command.Command;
+
+/**
+ *
+ */
+public class ParkingBrake extends Command {
+	PIDSource EncoderSource;
+	PIDOutput PidOut;
+	PIDController brakePID;
+	double encoderStartPoint;
+    public ParkingBrake() {
+    	 requires(Robot.drivetrainSS);
+    	 Robot.drivetrainSS.driverControl = false;
+    }
+
+    // Called just before this Command runs the first time
+    protected void initialize() {
+    	encoderStartPoint = Robot.drivetrainSS.getDriveDistance();
+    	EncoderSource = new PIDSource() {
+			
+			@Override
+			public double pidGet() {	
+				return encoderStartPoint;
+			}
+		};
+    	PidOut = new PIDOutput() {
+			
+			@Override
+			public void pidWrite(double output) {
+				Robot.drivetrainSS.arcadeDrive(output, 0);
+				
+			}
+		};
+    	brakePID = new PIDController(Constants.drivepidP, Constants.drivepidI, Constants.drivepidD,EncoderSource, PidOut);
+    	brakePID.setSetpoint(Robot.drivetrainSS.getDriveDistance());
+    	brakePID.reset();
+    	brakePID.enable();
+    }
+
+    // Called repeatedly when this Command is scheduled to run
+    protected void execute() {
+    }
+
+    // Make this return true when this Command no longer needs to run execute()
+    protected boolean isFinished() {
+       return !Robot.oi.buttonA;
+    }
+
+    // Called once after isFinished returns true
+    protected void end() {
+    	brakePID.disable();
+    	Robot.drivetrainSS.driverControl = true;
+    }
+
+    // Called when another command which requires one or more of the same
+    // subsystems is scheduled to run
+    protected void interrupted() {
+    	brakePID.disable();
+    	Robot.drivetrainSS.driverControl = true;
+    }
+}
