@@ -2,6 +2,7 @@ package org.usfirst.frc.team1806.robot;
 
 public class Constants {
 	//Amperage Limits
+	//TODO: fix the amerage limits lol
 	public final static int max3CimAmps = 200;
 	public final static int max2CimAmps = 250;
 	public final static int max1CimAmps = 300;
@@ -12,6 +13,8 @@ public class Constants {
 	//it's almost as long as pi
 	public final static double drivetrainInchesPerCount = 0.04908738521234051935097880286374;
 	
+	//value that limits power change
+	public final static double drivetrainMaxPowerChange = .1;
 	
 	//TODO: Tweak shifting values
 	//drive shifting constants

@@ -5,6 +5,7 @@ import org.usfirst.frc.team1806.robot.commands.AutoShiftToHigh;
 import org.usfirst.frc.team1806.robot.commands.AutoShiftToLow;
 import org.usfirst.frc.team1806.robot.commands.ParkingBrake;
 
+import edu.wpi.first.wpilibj.Joystick.RumbleType;
 import util.Latch;
 
 import java.lang.Math;
@@ -72,6 +73,14 @@ public class OI {
 
 				//Robot.drivetrainSS.arcadeDrive(0, 0);
 			}
+			
+			//rumbles based on what gear the drivetrain is in
+			if(Robot.drivetrainSS.isInLowGear()){
+				dc.setRumble(RumbleType.kRightRumble, (float) .35);
+			}else{
+				dc.setRumble(RumbleType.kRightRumble, (float) .7);
+			}
+			
 		}
 		//enable or disable automatic shifting based on back button
 		if (Robot.drivetrainSS.isAutoShiftActive() && disableAutoShift.update(buttonBack)){

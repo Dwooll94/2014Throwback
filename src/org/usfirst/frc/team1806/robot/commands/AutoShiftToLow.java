@@ -20,7 +20,6 @@ public class AutoShiftToLow extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
         Robot.drivetrainSS.shiftLow();
-        //TODO: see if setting power to zero actually lets the robot shift
         Robot.drivetrainSS.arcadeDrive(Constants.drivetrainShiftPower, 0);
         Robot.drivetrainSS.driverControl = false;
         timer.start();

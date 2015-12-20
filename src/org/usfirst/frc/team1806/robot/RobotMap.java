@@ -1,8 +1,6 @@
 package org.usfirst.frc.team1806.robot;
 
 public class RobotMap {
-
-	//TODO Find CIM PDP numbers
 	
 	//Initialize Left CIMs
 	public final static int leftCim0 = 0;

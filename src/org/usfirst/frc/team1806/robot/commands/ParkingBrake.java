@@ -37,7 +37,6 @@ public class ParkingBrake extends Command {
 			@Override
 			public void pidWrite(double output) {
 				
-				//TODO: Make it correct for if only one side is pushed
 				// Need to read each encoder separately and have two PID loops
 				Robot.drivetrainSS.arcadeDrive(output, 0);
 				

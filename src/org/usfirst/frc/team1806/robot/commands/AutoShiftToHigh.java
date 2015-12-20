@@ -20,7 +20,6 @@ public class AutoShiftToHigh extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
         Robot.drivetrainSS.shiftHigh();
-        //TODO: see if setting power to zero actually lets the robot shift
         Robot.drivetrainSS.arcadeDrive(Constants.drivetrainShiftPower, 0);
         Robot.drivetrainSS.driverControl = false;
         timer.start();
@@ -33,8 +32,6 @@ public class AutoShiftToHigh extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
     	//this time is how long the driver won't have control
-    	//.25 seconds
-    	//TODO: maybe change this time
     	//it is so the gearbox can shift,  because it needs to not be powered when it shifts
         return timer.get() >= Constants.drivetrainShiftWaitTime;
     }
