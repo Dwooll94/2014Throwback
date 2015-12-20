@@ -6,12 +6,16 @@ import org.usfirst.frc.team1806.robot.RobotMap;
 import org.usfirst.frc.team1806.robot.commands.AutoShiftToHigh;
 import org.usfirst.frc.team1806.robot.commands.AutoShiftToLow;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import util.SWATLib;
 
 public class SixCimTwoSpeed extends Subsystem {
 	// init hardware
@@ -28,6 +32,8 @@ public class SixCimTwoSpeed extends Subsystem {
 	private Encoder rightEncoder;
 
 	private DoubleSolenoid shifter;
+	
+	private AHRS navX;
 
 	private PowerDistributionPanel PDP;
 
@@ -41,6 +47,8 @@ public class SixCimTwoSpeed extends Subsystem {
 	//TODO Make these private
 	public static double currentSpeed;
 	public static double lastSpeed;
+	private double currentPower;
+	private double lastPower;
 	// CIM stress tracking variables
 	private Timer timer;
 	private double lastTrackedTime;
@@ -67,6 +75,10 @@ public class SixCimTwoSpeed extends Subsystem {
 		// initialize shifter
 		shifter = new DoubleSolenoid(RobotMap.shiftSolenoidA, RobotMap.shiftSolenoidB);
 		shiftLow();
+		
+		// initialize navX gyro
+		navX = new AHRS(SerialPort.Port.kMXP);
+		
 		// initialize PDP
 		PDP = new PowerDistributionPanel();
 
@@ -184,7 +196,6 @@ public class SixCimTwoSpeed extends Subsystem {
 			new AutoShiftToHigh().start();
 			lastAutoShift = timer.get();
 			timeSinceLastAutoShift = 0;
-//<<<<<<< HEAD
 		}
 		else if(getDriveSpeedFPS() < Constants.drivetrainMaxLowGearSpeed && Math.abs(power) > Constants.drivetrainPowerDownshiftPowerThreshold && isSlowingDown() && isInHighGear() && canAutoShiftAgain()){
 			//if the robot is slowing down while the driver is applying sufficient power, and is at a reasonable speed to be in low gear, downshift.
@@ -222,13 +233,18 @@ public class SixCimTwoSpeed extends Subsystem {
 	}
 
 	public double getDriveVelocity() {
-		// returns the average speed of the left and right side in inches per
-		// second
-		return ((leftEncoder.getRate() + rightEncoder.getRate()) / 2) * Constants.drivetrainInchesPerCount;
+		// returns the average speed of the left and right side in inches per second
+		//TODO: Does this work???????????????????????????????????????????????????
+		//getVelocity is in m/s
+		return SWATLib.convertTo2DVector(navX.getVelocityX(), navX.getVelocityY());
+		//Old version, using encoders:
+		//return ((leftEncoder.getRate() + rightEncoder.getRate()) / 2) * Constants.drivetrainInchesPerCount;
 	}
 
 	public double getDriveVelocityFPS() {
-		return getDriveVelocity() / 12;
+		//TODO: should convert to fps
+		return getDriveVelocity() * 3.28083989501;
+		//return getDriveVelocity() / 12;
 	}
 
 	public double getDriveSpeed() {
@@ -240,16 +256,18 @@ public class SixCimTwoSpeed extends Subsystem {
 	}
 
 	public double getDriveAccelFPSPS() {
-		return (currentSpeed - lastSpeed) / period;
+		//TODO: does this work?
+		return SWATLib.convertTo2DVector(navX.getWorldLinearAccelX(), navX.getWorldLinearAccelY());
+		//Old version:
+		//return (currentSpeed - lastSpeed) / period;
 	}
 
 	public boolean isSpeedingUp() {
 		return getDriveAccelFPSPS() > Constants.drivetrainAccelerationThreshold;
 	}
-///<<<<<<< HEAD
+
 	public boolean isSlowingDown(){
 		return getDriveAccelFPSPS() < -Constants.drivetrainAccelerationThreshold;
-///=======
 	}
 
 	// Methods for getting and setting user input
@@ -277,7 +295,6 @@ public class SixCimTwoSpeed extends Subsystem {
 
 	// methods regarding shifting
 	public void shiftLow() {
-		// TODO: Is killing the power needed?
 		power = 0;
 		turn = 0;
 		shifter.set(DoubleSolenoid.Value.kReverse);
@@ -316,16 +333,23 @@ public class SixCimTwoSpeed extends Subsystem {
 	
 	public void execute(double pPower, double pTurn) {
 
-		// Sets desired power and turn.
-		// The p stands for parameter :)
-		// #MASTERCODER
+		lastPower = power;
 		power = pPower;
 		turn = pTurn;
+
+		//dampens power change to TRY to prevent brownouts
+		if(Math.abs(power - lastPower) > Constants.drivetrainMaxPowerChange){
+			if(power > lastPower){
+				power = lastPower + Constants.drivetrainMaxPowerChange;
+			}else{
+				power = lastPower - Constants.drivetrainMaxPowerChange;
+			}
+		}
 
 		// Warn console if loop hasn't been run recently.
 		period = timer.get() - lastTrackedTime;
 		if ((period) > Constants.drivetrainExecuteWarnTime) {
-			System.out.println("SixCimTwoSpeed execute() hasn't run in:" + (timer.get() - lastTrackedTime));
+			System.out.println("SixCimTwoSpeed execute() hasn't run in:" + (timer.get() - lastTrackedTime) + " seconds.");
 		}
 		lastTrackedTime = timer.get();
 		timeSinceLastAutoShift = timer.get() - lastAutoShift;
