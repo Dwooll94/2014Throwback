@@ -44,34 +44,39 @@ public class OI {
 		// arcade drive, with deadzone
 
 		if (Robot.drivetrainSS.driverControl){
+			
+			/*
+			 * Low gear lock
+			 */
+			if(lt > .5){
+				Robot.drivetrainSS.lowGearLockEnable();
+			}else{
+				Robot.drivetrainSS.lowGearLockDisable();
+			}
+			
+			
+			/*
+			 * Drivetrain things
+			 */
+			
 			if (Math.abs(lsY) > Constants.xboxJoystickDeadzone) {
 				if (Math.abs(rsX) > Constants.xboxJoystickDeadzone) {
-					Robot.drivetrainSS.execute(lsY, rsX);
-					
-					//Using the execute method in the drivetrain subsystem instead of calling arcade drive.
-					
-					//Robot.drivetrainSS.arcadeDrive(lsY, rsX);
+					Robot.drivetrainSS.execute(lsY, rsX);					
 				} // end both out of deadzone
 				else {
 					// only power is out of deadzone
 					Robot.drivetrainSS.execute(lsY, 0);
-
-					//Robot.drivetrainSS.arcadeDrive(lsY, 0);
 				} // end only turn is out of deadzone
 			} // end turn is out of deadzone
 			else if (Math.abs(rsX) > Constants.xboxJoystickDeadzone) {
 				// only turn is out of deadzone
 				Robot.drivetrainSS.execute(0, rsX);
-
-				//Robot.drivetrainSS.arcadeDrive(0, rsX);
 			} // end only turn is out of deadzone
 			else if (buttonA){
 				new ParkingBrake().start();
 			}
 			else {
 				Robot.drivetrainSS.execute(0, 0);
-
-				//Robot.drivetrainSS.arcadeDrive(0, 0);
 			}
 			
 			//rumbles based on what gear the drivetrain is in
@@ -82,13 +87,22 @@ public class OI {
 			}
 			
 		}
+		
 		//enable or disable automatic shifting based on back button
-		if (Robot.drivetrainSS.isAutoShiftActive() && disableAutoShift.update(buttonBack)){
+		if(disableAutoShift.update(buttonBack)){
+			if(Robot.drivetrainSS.isAutoShiftActive()){
+				Robot.drivetrainSS.disableAutoShift();
+			}else{
+				Robot.drivetrainSS.enableAutoShift();
+			}
+		}
+		
+		/*if (Robot.drivetrainSS.isAutoShiftActive() && disableAutoShift.update(buttonBack)){
 			Robot.drivetrainSS.disableAutoShift();
 		}
 		if((!Robot.drivetrainSS.isAutoShiftActive())&& disableAutoShift.update(buttonBack)){
 			Robot.drivetrainSS.enableAutoShift();
-		}
+		}*/
 		
 		if(lt > .15 && !Robot.drivetrainSS.isAutoShiftActive()){
 			//shift to low manually
