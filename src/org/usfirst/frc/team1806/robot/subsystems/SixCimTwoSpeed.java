@@ -42,7 +42,8 @@ public class SixCimTwoSpeed extends Subsystem {
 	private double turn;
 	private int cimsRunningPerSide;
 	private boolean autoShift;
-	public boolean driverControl = true;
+	public boolean driverControl;
+	public boolean lowGearLock;
 	
 	//TODO Make these private. They're only referenced by SmartDashInterface
 	public static double currentSpeed;
@@ -88,6 +89,8 @@ public class SixCimTwoSpeed extends Subsystem {
 		turn = 0;
 		cimsRunningPerSide = 3;
 		autoShift = true;
+		driverControl = true;
+		lowGearLock = false;
 		currentSpeed = 0;
 		lastSpeed = 0;
 
@@ -184,14 +187,14 @@ public class SixCimTwoSpeed extends Subsystem {
 	private void shiftAutomatically() {
 		// shifts if neccessary, returns whether shifting was done
 		if (getDriveSpeedFPS() > Constants.drivetrainUpshiftSpeedThreshold
-				&& Math.abs(power) > Constants.drivetrainUpshiftPowerThreshold && isSpeedingUp() && isInLowGear() && canAutoShiftAgain()) {
+				&& Math.abs(power) > Constants.drivetrainUpshiftPowerThreshold && isSpeedingUp() && isInLowGear() && canAutoShiftAgain() && !lowGearLock) {
 			// Normal Upshift
 			// if fast enough to need to upshift, driver is applying sufficient
 			// throttle, the robot is speeding up and it's in low gear, upshift
 			new AutoShiftToHigh().start();
 			lastAutoShift = timer.get();
 			timeSinceLastAutoShift = 0;
-		} else if (getDriveSpeedFPS() > Constants.drivetrainMaxLowGearSpeed && isInLowGear() && canAutoShiftAgain()) {
+		} else if (getDriveSpeedFPS() > Constants.drivetrainMaxLowGearSpeed && isInLowGear() && canAutoShiftAgain() && !lowGearLock) {
 			// the rev limiter was hit because driver wasn't hitting the
 			// throttle hard enough to change gear
 			new AutoShiftToHigh().start();
@@ -314,6 +317,14 @@ public class SixCimTwoSpeed extends Subsystem {
 	public boolean isInHighGear() {
 		return shifter.get() == DoubleSolenoid.Value.kForward;
 	}
+	
+	public void lowGearLockDisable(){
+		lowGearLock = false;
+	}
+	
+	public void lowGearLockEnable(){
+		lowGearLock = true;
+	}
 
 	public void disableAutoShift() {
 		autoShift = false;
@@ -357,7 +368,7 @@ public class SixCimTwoSpeed extends Subsystem {
 		lastPower = power;
 		power = pPower;
 		turn = pTurn;
-
+		
 		//dampens power change to TRY to prevent brownouts
 		if(Math.abs(power - lastPower) > Constants.drivetrainMaxPowerChange){
 			if(power > lastPower){

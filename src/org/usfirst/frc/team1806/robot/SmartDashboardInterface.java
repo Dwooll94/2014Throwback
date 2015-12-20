@@ -23,6 +23,7 @@ public class SmartDashboardInterface {
 		SmartDashboard.putBoolean("CanAutoShiftAgain", Robot.drivetrainSS.canAutoShiftAgain());
 		SmartDashboard.putNumber("Drive Speed fps", Robot.drivetrainSS.getDriveSpeedFPS());
 		SmartDashboard.putNumber("Acceleration fpsps", Robot.drivetrainSS.getDriveAccelFPSPS());
+		SmartDashboard.putBoolean("Low Gear Lock?", Robot.drivetrainSS.lowGearLock);
 	
 	}
 	
