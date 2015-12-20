@@ -2,15 +2,14 @@ package org.usfirst.frc.team1806.robot;
 
 public class Constants {
 	//Amperage Limits
-	//TODO: fix the amerage limits lol
+	//TODO: fix the amerage limits lol THEY DON'T WANT YOU TO HAVE REALISTIC AMPERAGE LIMITS
 	public final static int max3CimAmps = 200;
 	public final static int max2CimAmps = 250;
 	public final static int max1CimAmps = 300;
 	
 	public final static double xboxJoystickDeadzone = .2;
 	//drivetrain encoder constants
-	//lmao bruh did you memorize this number
-	//it's almost as long as pi
+	//THEY DON'T WANT YOU TO HAVE SHORT NUMBERS
 	public final static double drivetrainInchesPerCount = 0.04908738521234051935097880286374;
 	
 	//value that limits power change

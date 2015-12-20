@@ -44,9 +44,10 @@ public class SixCimTwoSpeed extends Subsystem {
 	private boolean autoShift;
 	public boolean driverControl = true;
 	
-	//TODO Make these private
+	//TODO Make these private. They're only referenced by SmartDashInterface
 	public static double currentSpeed;
 	public static double lastSpeed;
+	
 	private double currentPower;
 	private double lastPower;
 	// CIM stress tracking variables
@@ -242,7 +243,7 @@ public class SixCimTwoSpeed extends Subsystem {
 	}
 
 	public double getDriveVelocityFPS() {
-		//TODO: should convert to fps
+		//TODO: This should convert to fps but fix it if it doesn't
 		return getDriveVelocity() * 3.28083989501;
 		//return getDriveVelocity() / 12;
 	}
@@ -331,6 +332,26 @@ public class SixCimTwoSpeed extends Subsystem {
 		return timeSinceLastAutoShift > Constants.drivetrainMinTimeBetweenShifts;
 	}
 	
+	private void runXCims(){
+		if (PDP.getTotalCurrent() > Constants.max1CimAmps) {
+			// Stop drivetrain to avoid brown out
+			cimsRunningPerSide = 0;
+
+		} /// end stop drivetrain to avoid brown out
+		else if (PDP.getTotalCurrent() > Constants.max2CimAmps) {
+			// Run only 1 cim to avoid brown out
+			cimsRunningPerSide = 1;
+		} // end run 1 cim
+		else if (PDP.getTotalCurrent() > Constants.max3CimAmps) {
+			// Run 2 cims to avoid brown out
+			cimsRunningPerSide = 2;
+		} // end run 2 cims
+		else {
+			// ALL SYSTEMS, FULL POWER
+			cimsRunningPerSide = 3;
+		} // end 3 cims, also end deciding how many CIMs to run
+	}
+	
 	public void execute(double pPower, double pTurn) {
 
 		lastPower = power;
@@ -357,25 +378,9 @@ public class SixCimTwoSpeed extends Subsystem {
 		lastSpeed = currentSpeed;
 		currentSpeed = getDriveSpeedFPS();
 
-		if (PDP.getTotalCurrent() > Constants.max1CimAmps) {
-			// Stop drivetrain to avoid brown out
-			cimsRunningPerSide = 0;
-
-		} /// end stop drivetrain to avoid brown out
-		else if (PDP.getTotalCurrent() > Constants.max2CimAmps) {
-			// Run only 1 cim to avoid brown out
-			cimsRunningPerSide = 1;
-		} // end run 1 cim
-		else if (PDP.getTotalCurrent() > Constants.max3CimAmps) {
-			// Run 2 cims to avoid brown out
-			cimsRunningPerSide = 2;
-		} // end run 2 cims
-		else {
-			// ALL SYSTEMS, FULL POWER
-			// ^ tru
-			cimsRunningPerSide = 3;
-		} // end 3 cims, also end deciding how many CIMs to run
-			// shiftAutomatically and set power
+		runXCims();
+		
+		// shiftAutomatically and set power
 		if (autoShift) {
 			shiftAutomatically();
 		}
