@@ -2,15 +2,18 @@ package org.usfirst.frc.team1806.robot;
 
 public class Constants {
 	//Amperage Limits
+	//TODO: fix the amerage limits lol THEY DON'T WANT YOU TO HAVE REALISTIC AMPERAGE LIMITS
 	public final static int max3CimAmps = 200;
 	public final static int max2CimAmps = 250;
 	public final static int max1CimAmps = 300;
 	
+	public final static double xboxJoystickDeadzone = .2;
 	//drivetrain encoder constants
-	//lmao bruh did you memorize this number
-	//it's almost as long as pi
+	//THEY DON'T WANT YOU TO HAVE SHORT NUMBERS
 	public final static double drivetrainInchesPerCount = 0.04908738521234051935097880286374;
 	
+	//value that limits power change
+	public final static double drivetrainMaxPowerChange = .1;
 	
 	//TODO: Tweak shifting values
 	//drive shifting constants
@@ -23,12 +26,12 @@ public class Constants {
 	public final static double drivetrainPowerDownshiftPowerThreshold = .97 ; //power must be over this
 	//a normal downshift is when the robot is more than likely coming to rest
 	public final static double drivetrainDownshiftPowerThreshold = .2; // power must be less than this
-	public final static double drivetrainDownshiftSpeedThreshold = 4; //speed must be less than this
+	public final static double drivetrainDownshiftSpeedThreshold = 3; //speed must be less than this
 	
 	//normal upshift that would occur when going from a stop to full speed
 	public final static double drivetrainUpshiftPowerThreshold = .75; //power must be more than this
-	public final static double drivetrainUpshiftSpeedThreshold = 6.0; //speed must be more than this
-	public final static double drivetrainMaxLowGearSpeed = 6.75; //exceeding this speed will force an autoshift to high gear.
+	public final static double drivetrainUpshiftSpeedThreshold = 4.5; //speed must be more than this
+	public final static double drivetrainMaxLowGearSpeed = 6; //exceeding this speed will force an autoshift to high gear.
 	//also used for a power downshift
 	public final static double drivetrainMinTimeBetweenShifts = 0.5;
 	//drive forward PID values
@@ -38,6 +41,10 @@ public class Constants {
 	
 	//the drivetrain execute loop will send a warning to the console if it doesn't run in the specified period.
 	public final static double drivetrainExecuteWarnTime = .25;
+	
+	//integrity testing variables
+	public final static double motorMinCurrent = .2;
+	public final static int cyclesUntilDead = 10;
 	
 	
 }

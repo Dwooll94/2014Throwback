@@ -1,4 +1,4 @@
-package org.usfirst.frc.team1806.robot.commands;
+package org.usfirst.frc.team1806.robot.commands.drivetrain;
 
 import org.usfirst.frc.team1806.robot.Constants;
 import org.usfirst.frc.team1806.robot.Robot;
@@ -20,7 +20,6 @@ public class AutoShiftToLow extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
         Robot.drivetrainSS.shiftLow();
-        //TODO: see if setting power to zero actually lets the robot shift
         Robot.drivetrainSS.arcadeDrive(Constants.drivetrainShiftPower, 0);
         Robot.drivetrainSS.driverControl = false;
         timer.start();

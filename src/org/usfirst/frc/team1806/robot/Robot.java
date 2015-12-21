@@ -2,9 +2,14 @@
 package org.usfirst.frc.team1806.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
+import org.usfirst.frc.team1806.robot.commands.utility.IntegrityTestingOff;
+import org.usfirst.frc.team1806.robot.commands.utility.IntegrityTestingOn;
 import org.usfirst.frc.team1806.robot.subsystems.SixCimTwoSpeed;
 
 /**
@@ -16,17 +21,23 @@ import org.usfirst.frc.team1806.robot.subsystems.SixCimTwoSpeed;
  */
 public class Robot extends IterativeRobot {
 
-	public static final SixCimTwoSpeed drivetrainSS = new SixCimTwoSpeed();
+	public static SixCimTwoSpeed drivetrainSS;
 	public static OI oi;
-
-    Command autonomousCommand;
+	public static SmartDashboardInterface dashboard;
+	public static SendableChooser sc;
+	Command IntegrityCommand;
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
+    	drivetrainSS = new SixCimTwoSpeed();
 		oi = new OI();
+		dashboard = new SmartDashboardInterface();
+		sc = new SendableChooser();
+		sc.addDefault("Integrity Testing: Off", new IntegrityTestingOff());
+		sc.addObject("Integrity Testing: On", new IntegrityTestingOn());
     }
 	
 	public void disabledPeriodic() {
@@ -34,7 +45,7 @@ public class Robot extends IterativeRobot {
 	}
 
     public void autonomousInit() {
-        if (autonomousCommand != null) autonomousCommand.start();
+        //if (autonomousCommand != null) autonomousCommand.start();
     }
 
     public void autonomousPeriodic() {
@@ -42,7 +53,13 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopInit() {
-        if (autonomousCommand != null) autonomousCommand.cancel();
+    	
+    	//For integrity testing feature.
+    	IntegrityCommand = (Command) sc.getSelected();
+    	IntegrityCommand.start();
+    	
+    	
+        //if (autonomousCommand != null) autonomousCommand.cancel();
     }
 
     public void disabledInit(){
@@ -52,6 +69,7 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         oi.update();
+        dashboard.updateData();
     }
     
     public void testPeriodic() {

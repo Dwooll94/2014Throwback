@@ -1,4 +1,4 @@
-package org.usfirst.frc.team1806.robot.commands;
+package org.usfirst.frc.team1806.robot.commands.drivetrain;
 
 import org.usfirst.frc.team1806.robot.Constants;
 import org.usfirst.frc.team1806.robot.Robot;
@@ -37,7 +37,6 @@ public class ParkingBrake extends Command {
 			@Override
 			public void pidWrite(double output) {
 				
-				//TODO: Make it correct for if only one side is pushed
 				// Need to read each encoder separately and have two PID loops
 				Robot.drivetrainSS.arcadeDrive(output, 0);
 				
