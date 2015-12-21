@@ -42,5 +42,9 @@ public class Constants {
 	//the drivetrain execute loop will send a warning to the console if it doesn't run in the specified period.
 	public final static double drivetrainExecuteWarnTime = .25;
 	
+	//integrity testing variables
+	public final static double motorMinCurrent = .2;
+	public final static int cyclesUntilDead = 10;
+	
 	
 }

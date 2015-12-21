@@ -1,14 +1,14 @@
 package org.usfirst.frc.team1806.robot;
 
 
-import org.usfirst.frc.team1806.robot.commands.AutoShiftToHigh;
-import org.usfirst.frc.team1806.robot.commands.AutoShiftToLow;
-import org.usfirst.frc.team1806.robot.commands.ParkingBrake;
-
 import edu.wpi.first.wpilibj.Joystick.RumbleType;
 import util.Latch;
 
 import java.lang.Math;
+
+import org.usfirst.frc.team1806.robot.commands.drivetrain.AutoShiftToHigh;
+import org.usfirst.frc.team1806.robot.commands.drivetrain.AutoShiftToLow;
+import org.usfirst.frc.team1806.robot.commands.drivetrain.ParkingBrake;
 
 /**
  * This class is the glue that binds the controls on the physical operator

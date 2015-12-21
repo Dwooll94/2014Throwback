@@ -24,6 +24,7 @@ public class SmartDashboardInterface {
 		SmartDashboard.putNumber("Drive Speed fps", Robot.drivetrainSS.getDriveSpeedFPS());
 		SmartDashboard.putNumber("Acceleration fpsps", Robot.drivetrainSS.getDriveAccelFPSPS());
 		SmartDashboard.putBoolean("Low Gear Lock?", Robot.drivetrainSS.lowGearLock);
+		SmartDashboard.putBoolean("Dead Cim?", Robot.drivetrainSS.deadCim);
 	
 	}
 	
