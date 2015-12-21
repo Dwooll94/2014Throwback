@@ -1,4 +1,4 @@
-package org.usfirst.frc.team1806.robot.commands;
+package org.usfirst.frc.team1806.robot.commands.utility;
 
 import org.usfirst.frc.team1806.robot.Robot;
 
@@ -7,15 +7,15 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ShiftHigh extends Command {
+public class IntegrityTestingOff extends Command {
 
-    public ShiftHigh() {
-        requires(Robot.drivetrainSS);
+    public IntegrityTestingOff() {
+
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.drivetrainSS.shiftHigh();
+    	Robot.drivetrainSS.integrityTestingDisable();
     }
 
     // Called repeatedly when this Command is scheduled to run
