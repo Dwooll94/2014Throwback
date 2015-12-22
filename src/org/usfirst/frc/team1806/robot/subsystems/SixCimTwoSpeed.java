@@ -7,6 +7,7 @@ import org.omg.CORBA.PUBLIC_MEMBER;
 import org.usfirst.frc.team1806.robot.Constants;
 import org.usfirst.frc.team1806.robot.Robot;
 import org.usfirst.frc.team1806.robot.RobotMap;
+import org.usfirst.frc.team1806.robot.SWATTalon;
 import org.usfirst.frc.team1806.robot.commands.drivetrain.AutoShiftToHigh;
 import org.usfirst.frc.team1806.robot.commands.drivetrain.AutoShiftToLow;
 
@@ -23,15 +24,15 @@ import util.SWATLib;
 
 public class SixCimTwoSpeed extends Subsystem {
 	// init hardware
-	private Talon leftDrive0;
-	private Talon leftDrive1;
-	private Talon leftDrive2;
+	private SWATTalon leftDrive0;
+	private SWATTalon leftDrive1;
+	private SWATTalon leftDrive2;
 
 	private Encoder leftEncoder;
 
-	private Talon rightDrive0;
-	private Talon rightDrive1;
-	private Talon rightDrive2;
+	private SWATTalon rightDrive0;
+	private SWATTalon rightDrive1;
+	private SWATTalon rightDrive2;
 
 	private Encoder rightEncoder;
 
@@ -57,14 +58,15 @@ public class SixCimTwoSpeed extends Subsystem {
 	private double lastPower;
 
 	// integrity testing vars
-	public boolean deadCim;
 	private boolean integrityTesting;
-	private int left0deadCycles;
-	private int left1deadCycles;
-	private int left2deadCycles;
-	private int right0deadCycles;
-	private int right1deadCycles;
-	private int right2deadCycles;
+	private ArrayList<SWATTalon> talonArray;
+	public int leftsideDeadTalons;
+	public int rightsideDeadTalons;
+	private double leftpower;
+	private double rightpower;
+	
+	
+
 
 	// CIM stress tracking variables
 	private Timer timer;
@@ -76,16 +78,16 @@ public class SixCimTwoSpeed extends Subsystem {
 	public SixCimTwoSpeed() {
 
 		// initialize left side CIMs
-		leftDrive0 = new Talon(RobotMap.leftCim0);
-		leftDrive1 = new Talon(RobotMap.leftCim1);
-		leftDrive2 = new Talon(RobotMap.leftCim2);
+		leftDrive0 = new SWATTalon(RobotMap.leftCim0, RobotMap.leftCim0PDP);
+		leftDrive1 = new SWATTalon(RobotMap.leftCim1, RobotMap.leftCim1PDP);
+		leftDrive2 = new SWATTalon(RobotMap.leftCim2, RobotMap.leftCim2PDP);
 		// initialize left side Encoder
 		leftEncoder = new Encoder(RobotMap.leftEncoderA, RobotMap.leftEncoderB);
 
 		// initialize right side CIMs
-		rightDrive0 = new Talon(RobotMap.rightCim0);
-		rightDrive1 = new Talon(RobotMap.rightCim1);
-		rightDrive2 = new Talon(RobotMap.rightCim2);
+		rightDrive0 = new SWATTalon(RobotMap.rightCim0, RobotMap.rightCim0PDP);
+		rightDrive1 = new SWATTalon(RobotMap.rightCim1, RobotMap.rightCim1PDP);
+		rightDrive2 = new SWATTalon(RobotMap.rightCim2, RobotMap.rightCim2PDP);
 		// initialize right side Encoder
 		rightEncoder = new Encoder(RobotMap.rightEncoderA, RobotMap.rightEncoderB, true);
 
@@ -109,14 +111,24 @@ public class SixCimTwoSpeed extends Subsystem {
 		currentSpeed = 0;
 		lastSpeed = 0;
 
-		deadCim = false;
 		integrityTesting = false;
-		left0deadCycles = 0;
-		left1deadCycles = 0;
-		left2deadCycles = 0;
-		right0deadCycles = 0;
-		right1deadCycles = 0;
-		right2deadCycles = 0;
+		talonArray = new ArrayList<SWATTalon>();
+		talonArray.add(leftDrive0);
+		talonArray.add(leftDrive1);
+		talonArray.add(leftDrive2);
+		talonArray.add(rightDrive0);
+		talonArray.add(rightDrive1);
+		talonArray.add(rightDrive2);
+		leftsideDeadTalons = 0;
+		rightsideDeadTalons = 0;
+		leftpower = 0;
+		rightpower = 0;
+		
+		//init talon array
+		//add more talons here if you'd like to test them for integrity
+		
+
+		
 
 		// initialize time tracking
 		timer = new Timer();
@@ -409,65 +421,29 @@ public class SixCimTwoSpeed extends Subsystem {
 	}
 
 	private void motorIntegrityTest() {
-
-		if (leftDrive0.get() != 0 && PDP.getCurrent(RobotMap.leftCim0PDP) <= Constants.motorMinCurrent) {
-			left0deadCycles++;
-		} else {
-			left0deadCycles = 0;
+		
+		leftsideDeadTalons = 0;
+		rightsideDeadTalons = 0;
+		
+		//Run integrity testing on all motors
+		for(int i = 0; i <= 5; i++){
+			talonArray.get(i).integrityTest();
+		}
+		
+		//test left side talons only
+		for(int i = 0; i <= 2; i++){
+			if(talonArray.get(i).isDead()){
+				leftsideDeadTalons++;
+			}
 		}
 
-		if (leftDrive1.get() != 0 && PDP.getCurrent(RobotMap.leftCim1PDP) <= Constants.motorMinCurrent) {
-			left1deadCycles++;
-		} else {
-			left1deadCycles = 0;
+		//test right side talons only
+		for(int i = 0; i >= 3 && i<=5; i++){
+			if(talonArray.get(i).isDead()){
+				rightsideDeadTalons++;
+			}
 		}
-
-		if (leftDrive2.get() != 0 && PDP.getCurrent(RobotMap.leftCim2PDP) <= Constants.motorMinCurrent) {
-			left2deadCycles++;
-		} else {
-			left2deadCycles = 0;
-		}
-
-		if (rightDrive0.get() != 0 && PDP.getCurrent(RobotMap.rightCim0PDP) <= Constants.motorMinCurrent) {
-			right0deadCycles++;
-		} else {
-			right0deadCycles = 0;
-		}
-
-		if (rightDrive1.get() != 0 && PDP.getCurrent(RobotMap.rightCim1PDP) <= Constants.motorMinCurrent) {
-			right1deadCycles++;
-		} else {
-			right1deadCycles = 0;
-		}
-
-		if (rightDrive2.get() != 0 && PDP.getCurrent(RobotMap.rightCim2PDP) <= Constants.motorMinCurrent) {
-			right2deadCycles++;
-		} else {
-			right2deadCycles = 0;
-		}
-
-		if (left0deadCycles >= Constants.cyclesUntilDead) {
-			deadCim = true;
-			System.out.println("leftDrive0 is dead.");
-		}else if (left1deadCycles >= Constants.cyclesUntilDead) {
-			deadCim = true;
-			System.out.println("leftDrive1 is dead.");
-		}else if (left2deadCycles >= Constants.cyclesUntilDead) {
-			deadCim = true;
-			System.out.println("leftDrive2 is dead.");
-		}else if (right0deadCycles >= Constants.cyclesUntilDead) {
-			deadCim = true;
-			System.out.println("rightDrive0 is dead.");
-		}else if (right1deadCycles >= Constants.cyclesUntilDead) {
-			deadCim = true;
-			System.out.println("rightDrive1 is dead.");
-		}else if (right2deadCycles >= Constants.cyclesUntilDead) {
-			deadCim = true;
-			System.out.println("rightDrive2 is dead.");
-		}else{
-			deadCim = false;
-		}
-
+		
 	}
 
 	public void execute(double pPower, double pTurn) {
@@ -503,13 +479,20 @@ public class SixCimTwoSpeed extends Subsystem {
 		if (autoShift) {
 			shiftAutomatically();
 		}
-
-		setLeftDrive(power + turn, cimsRunningPerSide);
-		setRightDrive(power - turn, cimsRunningPerSide);
-
+		
 		if (integrityTesting) {
 			motorIntegrityTest();
 		}
+		
+		//compensation code: turn one side's power down if the other side has dead motors
+		leftpower = power * (1 - (rightsideDeadTalons * Constants.deadMotorCompensation));
+		rightpower = power * (1 - (leftsideDeadTalons * Constants.deadMotorCompensation));
+
+		//FIXME: If a side has dead cims, you don't want to kill the live ones if too much current is drawn
+		setLeftDrive(leftpower + turn, cimsRunningPerSide);
+		setRightDrive(rightpower - turn, cimsRunningPerSide);
+
+		
 
 	}
 }
