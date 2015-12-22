@@ -32,8 +32,8 @@ public class OI {
 	private Latch disableAutoShift;
 	public OI() {
 		disableAutoShift = new Latch();
-		// NOTHING
 	}
+	
 
 	public void update() {
 		lsY = dc.getLeftJoyY();

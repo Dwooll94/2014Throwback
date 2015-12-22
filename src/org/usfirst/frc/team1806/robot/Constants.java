@@ -44,6 +44,7 @@ public class Constants {
 	
 	//integrity testing variables
 	public final static double motorMinCurrent = .2;
+	public final static double motorMinPower = .2;
 	public final static int cyclesUntilDead = 10;
 	
 	//How much a side should compensate for if the other side has a dead motor
