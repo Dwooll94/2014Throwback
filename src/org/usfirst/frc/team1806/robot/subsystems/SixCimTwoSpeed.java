@@ -147,13 +147,13 @@ public class SixCimTwoSpeed extends Subsystem {
 		} else if (speed < -1) {
 			speed = -1;
 		}
-<<<<<<< HEAD
+///<<<<<<< HEAD
 		speed = -speed; //invert speed to left side
-=======
+///=======
 
 		speed = -speed;
 
->>>>>>> refs/remotes/lethcoeb/master
+///>>>>>>> refs/remotes/lethcoeb/master
 		// set power
 		if (numCimsRunning < 1) {
 			leftDrive0.set(0);

@@ -89,7 +89,7 @@ public class OI {
 			//rumbles based on what gear the drivetrain is in
 			if(Robot.drivetrainSS.isInLowGear() && !shifting){
 				dc.setRumble(RumbleType.kLeftRumble, (float) .35);
-			}else{
+			}else if (Robot.drivetrainSS.isInHighGear() && !shifting){
 				dc.setRumble(RumbleType.kRightRumble, (float) .7);
 			}
 			
