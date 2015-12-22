@@ -26,7 +26,8 @@ public class SmartDashboardInterface {
 		SmartDashboard.putBoolean("Low Gear Lock?", Robot.drivetrainSS.lowGearLock);
 		SmartDashboard.putNumber("Right side dead CIMs: ", Robot.drivetrainSS.rightsideDeadTalons);
 		SmartDashboard.putNumber("Left side dead CIMs: ", Robot.drivetrainSS.leftsideDeadTalons);
-
+		SmartDashboard.putNumber("PDP Temperature", Robot.PDP.getTemperature());
+		SmartDashboard.putNumber("PDP Total Wattage", Robot.PDP.getTotalPower());
 	
 	}
 	

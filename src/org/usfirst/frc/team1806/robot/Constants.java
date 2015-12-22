@@ -2,10 +2,16 @@ package org.usfirst.frc.team1806.robot;
 
 public class Constants {
 	//Amperage Limits
-	//TODO: fix the amerage limits lol THEY DON'T WANT YOU TO HAVE REALISTIC AMPERAGE LIMITS
+	//TODO: fix the amperage limits lol THEY DON'T WANT YOU TO HAVE REALISTIC AMPERAGE LIMITS
 	public final static int max3CimAmps = 200;
 	public final static int max2CimAmps = 250;
 	public final static int max1CimAmps = 300;
+	
+	//Voltage Limits
+	//TODO: Make sure these are reasonable.
+	public final static double min3CimVoltage = 8;
+	public final static double min2CimVoltage = 7;
+	public final static double min1CimVoltage = 5;
 	
 	public final static double xboxJoystickDeadzone = .2;
 	//drivetrain encoder constants

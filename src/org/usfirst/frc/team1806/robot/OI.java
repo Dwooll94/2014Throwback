@@ -27,6 +27,7 @@ public class OI {
 	private double lt;
 	private boolean rb;
 	private boolean lb;
+	public boolean shifting;
 	public boolean buttonA;
 	public boolean buttonBack;
 	private Latch disableAutoShift;
@@ -86,8 +87,8 @@ public class OI {
 			}
 			
 			//rumbles based on what gear the drivetrain is in
-			if(Robot.drivetrainSS.isInLowGear()){
-				dc.setRumble(RumbleType.kRightRumble, (float) .35);
+			if(Robot.drivetrainSS.isInLowGear() && !shifting){
+				dc.setRumble(RumbleType.kLeftRumble, (float) .35);
 			}else{
 				dc.setRumble(RumbleType.kRightRumble, (float) .7);
 			}

@@ -14,10 +14,10 @@ public class SWATTalon extends Talon{
 	}
 	
 	public void integrityTest(){
-		if(this.get() > Constants.motorMinPower && Robot.drivetrainSS.PDP.getCurrent(pdpChannel) > Constants.motorMinCurrent){
+		if(this.get() > Constants.motorMinPower && Robot.PDP.getCurrent(pdpChannel) < Constants.motorMinCurrent){
 			//Sending power but not drawing current
 			deadCycles++;
-		}else{
+		}else if (this.get() > Constants.motorMinPower && Robot.PDP.getCurrent(pdpChannel) > Constants.motorMinCurrent){
 			//Sending power and drawing current
 			deadCycles = 0;
 		}
@@ -32,6 +32,10 @@ public class SWATTalon extends Talon{
 		}
 		
 		return dead;
+	}
+	
+	public double getCurrent(){
+		return Robot.PDP.getCurrent(pdpChannel);
 	}
 
 }

@@ -40,7 +40,6 @@ public class SixCimTwoSpeed extends Subsystem {
 
 	private AHRS navX;
 
-	public PowerDistributionPanel PDP;
 
 	// init software variables
 	private double power;
@@ -97,9 +96,6 @@ public class SixCimTwoSpeed extends Subsystem {
 
 		// initialize navX gyro
 		navX = new AHRS(SerialPort.Port.kMXP);
-
-		// initialize PDP
-		PDP = new PowerDistributionPanel();
 
 		// initialize Software values
 		power = 0;
@@ -340,7 +336,9 @@ public class SixCimTwoSpeed extends Subsystem {
 
 	// methods for getting diagnostic data
 	public double getAmperage() {
-		return PDP.getTotalCurrent();
+		double driveCurrent =leftDrive0.getCurrent() + leftDrive1.getCurrent() + leftDrive2.getCurrent();
+		driveCurrent += rightDrive0.getCurrent() + rightDrive1.getCurrent() + rightDrive2.getCurrent();
+		return driveCurrent;
 	}
 
 	public int getCimsRunningPerSide() {
@@ -397,16 +395,16 @@ public class SixCimTwoSpeed extends Subsystem {
 	}
 
 	private void runXCims() {
-		if (PDP.getTotalCurrent() > Constants.max1CimAmps) {
+		if (Robot.PDP.getTotalCurrent() > Constants.max1CimAmps || Robot.PDP.getVoltage() < Constants.min1CimVoltage) {
 			// Stop drivetrain to avoid brown out
 			cimsRunningPerSide = 0;
 
 		} /// end stop drivetrain to avoid brown out
-		else if (PDP.getTotalCurrent() > Constants.max2CimAmps) {
+		else if (Robot.PDP.getTotalCurrent() > Constants.max2CimAmps || Robot.PDP.getVoltage() < Constants.min2CimVoltage) {
 			// Run only 1 cim to avoid brown out
 			cimsRunningPerSide = 1;
 		} // end run 1 cim
-		else if (PDP.getTotalCurrent() > Constants.max3CimAmps) {
+		else if (Robot.PDP.getTotalCurrent() > Constants.max3CimAmps || Robot.PDP.getVoltage() < Constants.min3CimVoltage) {
 			// Run 2 cims to avoid brown out
 			cimsRunningPerSide = 2;
 		} // end run 2 cims

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 import org.usfirst.frc.team1806.robot.commands.utility.IntegrityTestingOff;
 import org.usfirst.frc.team1806.robot.commands.utility.IntegrityTestingOn;
+import org.usfirst.frc.team1806.robot.subsystems.PowerDistributionPanel;
 import org.usfirst.frc.team1806.robot.subsystems.SixCimTwoSpeed;
 
 /**
@@ -26,6 +27,7 @@ public class Robot extends IterativeRobot {
 	public static SmartDashboardInterface dashboard;
 	public static SendableChooser sc;
 	Command IntegrityCommand;
+	public static PowerDistributionPanel PDP;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -33,6 +35,7 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	drivetrainSS = new SixCimTwoSpeed();
+    	PDP = new PowerDistributionPanel();
 		oi = new OI();
 		dashboard = new SmartDashboardInterface();
 		sc = new SendableChooser();
