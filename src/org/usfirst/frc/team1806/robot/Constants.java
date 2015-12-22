@@ -46,5 +46,8 @@ public class Constants {
 	public final static double motorMinCurrent = .2;
 	public final static int cyclesUntilDead = 10;
 	
+	//How much a side should compensate for if the other side has a dead motor
+	public final static double deadMotorCompensation = .25;
+	
 	
 }

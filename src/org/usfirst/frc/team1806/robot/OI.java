@@ -4,6 +4,7 @@ package org.usfirst.frc.team1806.robot;
 import edu.wpi.first.wpilibj.Joystick.RumbleType;
 import util.Latch;
 
+import java.awt.Label;
 import java.lang.Math;
 
 import org.usfirst.frc.team1806.robot.commands.drivetrain.AutoShiftToHigh;
@@ -24,6 +25,8 @@ public class OI {
 	// private double rsY;
 	private double rt;
 	private double lt;
+	private boolean rb;
+	private boolean lb;
 	public boolean buttonA;
 	public boolean buttonBack;
 	private Latch disableAutoShift;
@@ -39,6 +42,9 @@ public class OI {
 		// rsY = dc.getRightJoyY();
 		rt = dc.getRightTrigger();
 		lt = dc.getLeftTrigger();
+		rb = dc.getButtonRB();
+		lb = dc.getButtonLB();
+		
 		buttonA = dc.getButtonA();
 		buttonBack = dc.getButtonBack();
 		// arcade drive, with deadzone
@@ -104,11 +110,11 @@ public class OI {
 			Robot.drivetrainSS.enableAutoShift();
 		}*/
 		
-		if(lt > .15 && !Robot.drivetrainSS.isAutoShiftActive()){
+		if(lb && !Robot.drivetrainSS.isAutoShiftActive()){
 			//shift to low manually
 			new AutoShiftToLow().start();
 		}
-		else if(rt > .15 && !Robot.drivetrainSS.isAutoShiftActive()){
+		else if(rb && !Robot.drivetrainSS.isAutoShiftActive()){
 			new AutoShiftToHigh().start();
 		}
 	}
